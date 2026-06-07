@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@theme {
+  /* 클리닉 미니멀 팔레트 — 무광 화이트 베이스 + 절제된 단일 액센트 */
+  --color-paper: #ffffff;
+  --color-surface: #f4f5f7;
+  --color-surface2: #eceef1;
+  --color-line: #e4e7ec;
+  --color-ink: #16181d;
+  --color-ink2: #3a3d45;
+  --color-muted: #80858f;
+
+  /* 시그니처 UV 보라 — 아주 절제해서만 사용 */
+  --color-uv: #5b4bdd;
+  --color-uv-soft: #efedfd;
+
+  /* 살균 다크 모먼트 */
+  --color-night: #0c0a1e;
+  --color-night2: #161335;
+
+  --color-mint: #0bb59c;
+  --color-mint-soft: #e3f7f3;
+  --color-coral: #ec6a4d;
+
+  --font-sans: "Pretendard", "Pretendard Variable", system-ui, sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #d7d9de;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* 절제된 모션만 */
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* 전체 높이 트랙에 적용 → 상단 밴드가 폰 머리~발끝 전체를 훑음 */
+@keyframes scan-sweep {
+  0% {
+    transform: translateY(-30%);
+  }
+  100% {
+    transform: translateY(115%);
+  }
+}
+
+@keyframes rise {
+  0% {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-22px);
+    opacity: 0;
+  }
+}
+
+@keyframes wind {
+  0% {
+    transform: translateX(-130%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(130%);
+    opacity: 0;
+  }
+}
+
+@keyframes mist-fall {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(12px);
+    opacity: 0.85;
+  }
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
