@@ -1,8 +1,22 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, Info } from "lucide-react";
 import { PhoneGlyph } from "../components/PhoneGlyph";
 
-export function InsertScreen({ onInserted }: { onInserted: () => void }) {
+export function InsertScreen({
+  onInserted,
+  auto = false,
+}: {
+  onInserted: () => void;
+  auto?: boolean;
+}) {
+  // 발표 모드: 자동으로 '폰 올림' 처리
+  useEffect(() => {
+    if (!auto) return;
+    const t = setTimeout(onInserted, 2800);
+    return () => clearTimeout(t);
+  }, [auto, onInserted]);
+
   return (
     <div className="absolute inset-0 flex flex-col bg-paper px-14 pb-14 pt-32 text-ink">
       <h2 className="text-[44px] font-extrabold leading-tight tracking-tight">

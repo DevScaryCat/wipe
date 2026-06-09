@@ -1,10 +1,24 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Shield, Eye, Clock } from "lucide-react";
 import { PRICE } from "../kiosk";
 import { Wordmark } from "../components/Brand";
 import { PhoneGlyph } from "../components/PhoneGlyph";
 
-export function AttractScreen({ onStart }: { onStart: () => void }) {
+export function AttractScreen({
+  onStart,
+  auto = false,
+}: {
+  onStart: () => void;
+  auto?: boolean;
+}) {
+  // 발표 모드: 자동으로 시작
+  useEffect(() => {
+    if (!auto) return;
+    const t = setTimeout(onStart, 3500);
+    return () => clearTimeout(t);
+  }, [auto, onStart]);
+
   return (
     <button
       onClick={onStart}

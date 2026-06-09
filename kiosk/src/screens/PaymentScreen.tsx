@@ -82,7 +82,13 @@ function AmountRow() {
   );
 }
 
-export function PaymentScreen({ onPaid }: { onPaid: () => void }) {
+export function PaymentScreen({
+  onPaid,
+  auto = false,
+}: {
+  onPaid: () => void;
+  auto?: boolean;
+}) {
   const [sub, setSub] = useState<Sub>("select");
   const [provider, setProvider] = useState<Provider | null>(null);
 
@@ -101,6 +107,16 @@ export function PaymentScreen({ onPaid }: { onPaid: () => void }) {
       return () => clearTimeout(t);
     }
   }, [sub, onPaid]);
+
+  // 발표 모드: 결제 수단 선택 화면을 잠깐 보여준 뒤 자동으로 카드 결제 진행
+  useEffect(() => {
+    if (!auto || sub !== "select") return;
+    const t = setTimeout(() => {
+      setProvider(null);
+      setSub("processing");
+    }, 2800);
+    return () => clearTimeout(t);
+  }, [auto, sub]);
 
   const methodLabel = provider ? provider.name : "카드";
 

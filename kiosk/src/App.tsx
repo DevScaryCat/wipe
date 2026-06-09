@@ -38,6 +38,7 @@ interface WashState {
 export function App() {
   const [step, setStep] = useState<Step>("attract");
   const [realSpeed, setRealSpeed] = useState(false);
+  const [autoMode, setAutoMode] = useState(false); // 발표 모드: 손 안 대도 자동 순환
   const timings: Timings = realSpeed ? REAL_TIMINGS : DEMO_TIMINGS;
   const stages = realSpeed ? WASH_STAGES_REAL : WASH_STAGES_DEMO;
   const [wash, setWash] = useState<WashState>({
@@ -123,9 +124,15 @@ export function App() {
             transition={{ duration: 0.3 }}
             className="absolute inset-0"
           >
-            {step === "attract" && <AttractScreen onStart={() => go("payment")} />}
-            {step === "payment" && <PaymentScreen onPaid={() => go("insert")} />}
-            {step === "insert" && <InsertScreen onInserted={() => go("scan")} />}
+            {step === "attract" && (
+              <AttractScreen auto={autoMode} onStart={() => go("payment")} />
+            )}
+            {step === "payment" && (
+              <PaymentScreen auto={autoMode} onPaid={() => go("insert")} />
+            )}
+            {step === "insert" && (
+              <InsertScreen auto={autoMode} onInserted={() => go("scan")} />
+            )}
             {step === "scan" && <ScanScreen />}
             {step === "lift" && <LiftScreen />}
             {step === "sanitize" && (
@@ -145,8 +152,10 @@ export function App() {
       <DevPanel
         step={step}
         realSpeed={realSpeed}
+        autoMode={autoMode}
         onJump={go}
         onToggleSpeed={() => setRealSpeed((v) => !v)}
+        onToggleAuto={() => setAutoMode((v) => !v)}
       />
     </>
   );
@@ -156,13 +165,17 @@ export function App() {
 function DevPanel({
   step,
   realSpeed,
+  autoMode,
   onJump,
   onToggleSpeed,
+  onToggleAuto,
 }: {
   step: Step;
   realSpeed: boolean;
+  autoMode: boolean;
   onJump: (s: Step) => void;
   onToggleSpeed: () => void;
+  onToggleAuto: () => void;
 }) {
   const [open, setOpen] = useState(true);
   if (!open) {
@@ -201,9 +214,19 @@ function DevPanel({
         ))}
       </div>
       <button
+        onClick={onToggleAuto}
+        data-testid="auto-toggle"
+        className={[
+          "mt-2 w-full rounded px-2 py-1.5 text-[11px] font-semibold",
+          autoMode ? "bg-mint text-night" : "bg-white/8 text-white/70 hover:bg-white/15",
+        ].join(" ")}
+      >
+        발표 모드(자동 순환): {autoMode ? "ON ▶" : "OFF"}
+      </button>
+      <button
         onClick={onToggleSpeed}
         data-testid="speed-toggle"
-        className="mt-2 w-full rounded bg-white/8 px-2 py-1.5 text-[11px] text-white/70 hover:bg-white/15"
+        className="mt-1.5 w-full rounded bg-white/8 px-2 py-1.5 text-[11px] text-white/70 hover:bg-white/15"
       >
         속도: {realSpeed ? "실제" : "데모(빠름)"}
       </button>
