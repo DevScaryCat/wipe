@@ -1,10 +1,19 @@
 import { useEffect, useState, type ComponentType } from "react";
 import { motion } from "framer-motion";
-import { CreditCard, QrCode, Loader2, ArrowLeft, ChevronRight } from "lucide-react";
+import {
+  CreditCard,
+  QrCode,
+  Loader2,
+  ArrowLeft,
+  ChevronRight,
+  Check,
+  X,
+  RotateCcw,
+} from "lucide-react";
 import { PRICE } from "../kiosk";
 import { KakaoMark, NaverMark, TossMark, PaycoMark } from "../components/Logos";
 
-type Sub = "select" | "qrList" | "qr" | "processing";
+type Sub = "select" | "qrList" | "qr" | "processing" | "success" | "failure";
 
 interface Provider {
   key: string;
@@ -77,27 +86,85 @@ export function PaymentScreen({ onPaid }: { onPaid: () => void }) {
   const [sub, setSub] = useState<Sub>("select");
   const [provider, setProvider] = useState<Provider | null>(null);
 
-  // 자동 진행: QR 표시 → (스캔된 것으로 간주) → 승인 → 완료
+  // 자동 진행: QR 표시 → (스캔된 것으로 간주) → 승인 중 → 결제 완료 → 다음 단계
   useEffect(() => {
     if (sub === "qr") {
       const t = setTimeout(() => setSub("processing"), 2800);
       return () => clearTimeout(t);
     }
     if (sub === "processing") {
-      const t = setTimeout(onPaid, 1500);
+      const t = setTimeout(() => setSub("success"), 1600);
+      return () => clearTimeout(t);
+    }
+    if (sub === "success") {
+      const t = setTimeout(onPaid, 1800);
       return () => clearTimeout(t);
     }
   }, [sub, onPaid]);
+
+  const methodLabel = provider ? provider.name : "카드";
 
   // ── 승인 중 ──
   if (sub === "processing") {
     return (
       <div className="absolute inset-0 flex flex-col items-center justify-center bg-paper text-ink">
         <Loader2 size={60} className="animate-spin text-uv" />
-        <p className="mt-7 text-[26px] font-bold">
-          {provider ? provider.name : "카드"} 결제 승인 중…
-        </p>
+        <p className="mt-7 text-[26px] font-bold">{methodLabel} 결제 승인 중…</p>
         <p className="mt-2 text-[18px] text-muted">잠시만 기다려 주세요</p>
+      </div>
+    );
+  }
+
+  // ── 결제 완료 ──
+  if (sub === "success") {
+    return (
+      <div className="absolute inset-0 flex flex-col items-center justify-center bg-paper text-ink">
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 18 }}
+          className="flex h-28 w-28 items-center justify-center rounded-full bg-mint text-white"
+        >
+          <Check size={56} strokeWidth={3} />
+        </motion.div>
+        <p className="mt-8 text-[32px] font-extrabold tracking-tight">결제 완료</p>
+        <p className="mt-3 text-[20px] text-muted">
+          {methodLabel} · {PRICE.toLocaleString()}원
+        </p>
+        <p className="mt-10 text-[17px] text-muted">잠시 후 다음 단계로 진행됩니다</p>
+      </div>
+    );
+  }
+
+  // ── 결제 실패 ──
+  if (sub === "failure") {
+    return (
+      <div className="absolute inset-0 flex flex-col items-center justify-center bg-paper px-14 text-ink">
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 18 }}
+          className="flex h-28 w-28 items-center justify-center rounded-full bg-coral text-white"
+        >
+          <X size={56} strokeWidth={3} />
+        </motion.div>
+        <p className="mt-8 text-[32px] font-extrabold tracking-tight">
+          결제에 실패했어요
+        </p>
+        <p className="mt-3 text-center text-[19px] leading-relaxed text-muted">
+          결제가 정상 처리되지 않았어요.
+          <br />
+          다시 시도해 주세요.
+        </p>
+        <button
+          onClick={() => {
+            setProvider(null);
+            setSub("select");
+          }}
+          className="mt-10 flex items-center gap-2.5 rounded-2xl bg-ink px-12 py-5 text-[24px] font-bold text-white active:scale-[0.99]"
+        >
+          <RotateCcw size={22} /> 다시 시도
+        </button>
       </div>
     );
   }
@@ -231,6 +298,14 @@ export function PaymentScreen({ onPaid }: { onPaid: () => void }) {
           <ChevronRight size={26} className="text-muted" />
         </button>
       </div>
+
+      {/* 시뮬레이터: 결제 실패 화면 미리보기 (배포 시 제거) */}
+      <button
+        onClick={() => setSub("failure")}
+        className="mx-auto mt-2 text-[14px] text-muted/60 underline underline-offset-2"
+      >
+        결제 실패 화면 미리보기 (시뮬)
+      </button>
     </div>
   );
 }

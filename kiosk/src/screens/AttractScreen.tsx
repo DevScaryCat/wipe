@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, ShieldCheck, Sparkles, Clock } from "lucide-react";
+import { ArrowRight, Shield, Eye, Clock } from "lucide-react";
 import { PRICE } from "../kiosk";
 import { Wordmark } from "../components/Brand";
 import { PhoneGlyph } from "../components/PhoneGlyph";
@@ -48,16 +48,16 @@ export function AttractScreen({ onStart }: { onStart: () => void }) {
         </div>
       </div>
 
-      {/* 신뢰 배지 */}
-      <div className="mb-6 flex gap-6 text-[16px] text-ink2">
+      {/* 신뢰 배지 (단순·차분하게) */}
+      <div className="mb-6 flex gap-7 text-[16px] text-ink2">
         <span className="flex items-center gap-2">
-          <Clock size={18} className="text-uv" /> 30초 완료
+          <Clock size={16} className="text-ink/40" /> 30초 완료
         </span>
         <span className="flex items-center gap-2">
-          <ShieldCheck size={18} className="text-uv" /> 폰 접촉 없음
+          <Shield size={16} className="text-ink/40" /> 폰 접촉 없음
         </span>
         <span className="flex items-center gap-2">
-          <Sparkles size={18} className="text-uv" /> 비포·애프터 확인
+          <Eye size={16} className="text-ink/40" /> 비포·애프터
         </span>
       </div>
 
