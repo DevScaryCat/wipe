@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# 다운로드한 서드파티 CAD 에셋 (우리 작업물 아님 · 라이선스/용량)
+self-ticketing-counter-kiosk-1.snapshot.2/
+*.snapshot.*/
+*.step
+*.stp
+*.STEP
+*.STP
+*.f3d
+*.f3z
