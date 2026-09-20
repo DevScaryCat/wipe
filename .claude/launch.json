@@ -7,6 +7,13 @@
       "runtimeArgs": ["run", "dev"],
       "cwd": "kiosk",
       "port": 5173
+    },
+    {
+      "name": "wipe-landing",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--port", "5174", "--strictPort"],
+      "cwd": "landing",
+      "port": 5174
     }
   ]
 }
